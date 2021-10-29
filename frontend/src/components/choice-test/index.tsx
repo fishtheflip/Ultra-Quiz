@@ -1,12 +1,16 @@
 import React, {useState} from 'react'
 
-const ChoiceTest = () => {
-    const [item, setItem] = useState('js')
+type ChoiceTestProps ={
+    setSubject: (item : string)=> void
+}
+
+const ChoiceTest = ({setSubject}: ChoiceTestProps) => {
+    const [itemSubject, setItemSubject] = useState('js')
     const [hiddenBlock, setHiddenBlock] = useState( false )
     const cangeItem = (item : string ) =>{
-        setItem(item)
         setHiddenBlock(true)
-        console.log(item)
+        setItemSubject(item)
+        console.log('Current Subject', itemSubject)
     }
 
         return (
@@ -14,7 +18,7 @@ const ChoiceTest = () => {
                 <button className="btn btn-info btn-lg btn-block" onClick={()=> cangeItem('js')}>JS</button>
                 <button className="btn btn-info btn-lg btn-block" onClick={()=>cangeItem('html')}>HTML</button>
                 <button className="btn btn-info btn-lg btn-block" onClick={()=>cangeItem('css')}>CSS</button>
-                {hiddenBlock ? <button className="btn btn-success btn-lg btn-block" onClick={()=> console.log('BEGIN')}>Начать тест по {item}</button> : null}
+                {hiddenBlock ? <button className="btn btn-success btn-lg btn-block" onClick={ ()=> setSubject(itemSubject) }>Начать тест по {itemSubject}</button> : null}
             </div>
         )
     

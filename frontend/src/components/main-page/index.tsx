@@ -3,11 +3,15 @@ import ChoiceTest from '../choice-test'
 import MainPageHeader from '../main-page-header'
 import './main-page.css'
 
-const MainPage = () => {
+type MainPageProps = {
+    setSubject: (item : string) => void
+}
+
+const MainPage = ({setSubject}:MainPageProps) => {
     return (
         <div className="container">
             <MainPageHeader/>
-            <ChoiceTest/>
+            <ChoiceTest setSubject={setSubject}/>
         </div>
     )
 }
