@@ -2,7 +2,7 @@ import React from 'react'
 
 type AnswerProps =  {
     answerText: string
-    choiceAnswer: () => void
+    choiceAnswer: (event: any) => void
     name: string
 }
 
