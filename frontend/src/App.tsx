@@ -5,24 +5,44 @@ import OptionsArea from './components/options-area'
 import Result from './components/result'
 import MainPage from './components/main-page'
 import data from './data/data'
-
+import dataHtml from './data/data-html'
+import dataCss from './data/data-css'
+import { useSelector,useDispatch } from 'react-redux';
+import {InitialStateValue} from './types/quiz-reduser-types'
 const App = () => {
 
   const [currentPage, setCurrentPage] = useState('')
   const [currentSubject, setCurrentSubject] = useState('js')
   const [correctAnswer, setCorrectAnswer] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [currentData, setCurrentData] = useState(data)
   
-  useEffect(() => {
+  const correctAnswerR = useSelector<InitialStateValue>(state => state.correctAnswerR)
+  const currentPageR = useSelector<InitialStateValue>(state => state.currentPageR)
+  const currentQuestionR = useSelector<InitialStateValue>(state => state.currentQuestionR)
+  const currentSubjectR = useSelector<InitialStateValue>(state => state.currentSubjectR)
+
+  const dispatch = useDispatch()
+  const addNode = (note:string) =>{
+    dispatch({type: 'Hello', payload: note})
+  }
+
+  useEffect(():void => {
     if(currentQuestion === 19) {
       setCurrentPage('result')
       setCurrentQuestion(0)
     }
   }, [currentQuestion]);
 
-  let {variable1, variable2, variable3, variable4, question, trueAnswer} = data[currentQuestion]
+  useEffect(():void => {
+    if(currentSubject === 'js' ) setCurrentData(data)
+    if(currentSubject === 'css' ) setCurrentData(dataCss)
+    if(currentSubject === 'html' ) setCurrentData(dataHtml)
+  }, [currentSubject]);
 
-  const setSubject = (item: string) =>{
+  let {variable1, variable2, variable3, variable4, question, trueAnswer} = currentData[currentQuestion]
+
+  const setSubject = (item: string):void =>{
     setCurrentSubject(item)
     setCurrentPage('test')
     console.log(data)
@@ -34,12 +54,12 @@ const App = () => {
     setCurrentQuestion(currentQuestion + 1)
   }
 
-  const restart = () => {
+  const restart = ():void => {
     if(currentPage === 'result') setCurrentPage('test')
     setCurrentQuestion(0)
     setCorrectAnswer(0)
   }
-  const goToMainPage = () =>{
+  const goToMainPage = ():void =>{
     restart()
     setCurrentPage('')
   }
