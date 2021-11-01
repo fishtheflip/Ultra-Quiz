@@ -4,14 +4,15 @@ import MainPageHeader from '../main-page-header'
 import './main-page.css'
 
 type MainPageProps = {
-    setSubject: (item : string) => void
+    setSubject: (item : string) => void,
+    getDataFromBack: (item : string)=> void
 }
 
-const MainPage = ({setSubject}:MainPageProps) => {
+const MainPage = ({setSubject, getDataFromBack}:MainPageProps) => {
     return (
         <div className="container">
             <MainPageHeader/>
-            <ChoiceTest setSubject={setSubject}/>
+            <ChoiceTest setSubject={setSubject} getDataFromBack={getDataFromBack}/>
         </div>
     )
 }

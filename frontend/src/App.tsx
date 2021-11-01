@@ -4,21 +4,22 @@ import AnswerArea from './components/answer-area'
 import OptionsArea from './components/options-area'
 import Result from './components/result'
 import MainPage from './components/main-page'
-import data from './data/data'
-import dataHtml from './data/data-html'
-import dataCss from './data/data-css'
 import { useSelector,useDispatch } from 'react-redux';
 import {InitialStateValue} from './types/quiz-reduser-types'
+import axios from 'axios';
+
 const App = () => {
-
-
-  const [currentData, setCurrentData] = useState(data)
+  // Set default data
+  const defaultData = {variable1:'data sending...', variable2:'data sending...', variable3:'data sending...', variable4:'data sending...', question:'data sending...', trueAnswer:'default...'}
+  const [currentData, setCurrentData] = useState([defaultData])
   
+  // Set variables from redux
   const correctAnswerR = useSelector<InitialStateValue>(state => state.correctAnswerR)
   const currentPageR = useSelector<InitialStateValue>(state => state.currentPageR)
   const currentQuestionR = useSelector<InitialStateValue, number>(state => state.currentQuestionR)
   const currentSubjectR = useSelector<InitialStateValue>(state => state.currentSubjectR)
 
+  // set dispatch actions
   const dispatch = useDispatch()
 
   // ================== //
@@ -42,10 +43,8 @@ const App = () => {
   }
   // ================= //
   
-
+  // Set use effect hooks
   useEffect(():void => {
-    console.log('Updated')
-    console.log(currentQuestionR)
     if(currentQuestionR === 19) {
       changeCurrentPage('result')
       changeCurrentQuestion()
@@ -53,21 +52,21 @@ const App = () => {
   }, [currentQuestionR]);
 
   useEffect(():void => {
-    if(currentSubjectR === 'js' ) setCurrentData(data)
-    if(currentSubjectR === 'css' ) setCurrentData(dataCss)
-    if(currentSubjectR === 'html' ) setCurrentData(dataHtml)
+    if(currentSubjectR === 'js' ) getDataFromBack('js')
+    if(currentSubjectR === 'css' ) getDataFromBack('css')
+    if(currentSubjectR === 'html' ) getDataFromBack('html')
   }, [currentSubjectR]);
   
   // ================ //
-
-  let {variable1, variable2, variable3, variable4, question, trueAnswer} = currentData[currentQuestionR] || {variable1:'default', variable2:'default', variable3:'default', variable4:'default', question:'default', trueAnswer:'default'}
+  // Destucturing variable to send it to props
+  let {variable1, variable2, variable3, variable4, question, trueAnswer} = currentData[currentQuestionR] || defaultData
 
 
   // ================ //
+  // Some methods to interactive with app
   const setSubject = (item: string):void =>{
     changeCurrentSubject(item)
     changeCurrentPage('test')
-    console.log(data)
   }
   const choiceAnswer = (e : React.MouseEvent<HTMLButtonElement>) =>{
     const name = (e.target as HTMLButtonElement).name
@@ -86,8 +85,14 @@ const App = () => {
     changeCurrentPage('')
   }
 
-  // ================= //
+  const getDataFromBack = (item:string): void =>{
+    axios.get(`http://localhost:5000/${item}`).then((res:any)=>{
+      setCurrentData(res.data)
+    }).catch((err)=> console.log(err))
+  }
 
+  // ================= //
+  // Display app
   if(currentPageR === 'test' ){  
     return (
       <div className='main-con'>
@@ -102,7 +107,7 @@ const App = () => {
       <Result finalResult={correctAnswerR} onRetake={restart} onStartLine={goToMainPage} />
     )
   }
-  return <MainPage setSubject={setSubject}/>
+  return <MainPage setSubject={setSubject} getDataFromBack={getDataFromBack}/>
 }
 
 export default App;

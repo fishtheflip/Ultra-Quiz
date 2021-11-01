@@ -1,15 +1,17 @@
 import React, {useState} from 'react'
 
 type ChoiceTestProps ={
-    setSubject: (item : string)=> void
+    setSubject: (item : string)=> void,
+    getDataFromBack: (item : string)=> void
 }
 
-const ChoiceTest = ({setSubject}: ChoiceTestProps) => {
+const ChoiceTest = ({setSubject, getDataFromBack}: ChoiceTestProps) => {
     const [itemSubject, setItemSubject] = useState('js')
     const [hiddenBlock, setHiddenBlock] = useState( false )
     const cangeItem = (item : string ) =>{
         setHiddenBlock(true)
         setItemSubject(item)
+        getDataFromBack(item)
         console.log('Current Subject', itemSubject)
     }
 
