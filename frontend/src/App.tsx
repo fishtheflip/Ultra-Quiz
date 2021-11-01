@@ -11,60 +11,84 @@ import { useSelector,useDispatch } from 'react-redux';
 import {InitialStateValue} from './types/quiz-reduser-types'
 const App = () => {
 
-  const [currentPage, setCurrentPage] = useState('')
-  const [currentSubject, setCurrentSubject] = useState('js')
-  const [correctAnswer, setCorrectAnswer] = useState(0)
-  const [currentQuestion, setCurrentQuestion] = useState(0)
+
   const [currentData, setCurrentData] = useState(data)
   
   const correctAnswerR = useSelector<InitialStateValue>(state => state.correctAnswerR)
   const currentPageR = useSelector<InitialStateValue>(state => state.currentPageR)
-  const currentQuestionR = useSelector<InitialStateValue>(state => state.currentQuestionR)
+  const currentQuestionR = useSelector<InitialStateValue, number>(state => state.currentQuestionR)
   const currentSubjectR = useSelector<InitialStateValue>(state => state.currentSubjectR)
 
   const dispatch = useDispatch()
-  const addNode = (note:string) =>{
-    dispatch({type: 'Hello', payload: note})
+
+  // ================== //
+  const changeCurrentPage = (note:string) =>{
+    dispatch({type: 'CHANGE_PAGE', payload: note})
   }
+  const changeCurrentSubject = (note:string) =>{
+    dispatch({type: 'CHANGE_SUBJECT', payload: note})
+  }
+  const changeCorrectAnswer = () =>{
+    dispatch({type: 'CHANGE_CORRECT_ANSWER'})
+  }
+  const nullifyCorrectAnswer =() =>{
+    dispatch({type: 'NULLIFY_CORRECT_ANSWER'})
+  }
+  const changeCurrentQuestion = () =>{
+    dispatch({type: 'CHANGE_CURRENT_QUESTION'})
+  }
+  const nullufyCurrentQuestion = () =>{
+    dispatch({type: 'NULLIFY_CURRENT_QUESTION'})
+  }
+  // ================= //
+  
 
   useEffect(():void => {
-    if(currentQuestion === 19) {
-      setCurrentPage('result')
-      setCurrentQuestion(0)
+    console.log('Updated')
+    console.log(currentQuestionR)
+    if(currentQuestionR === 19) {
+      changeCurrentPage('result')
+      changeCurrentQuestion()
     }
-  }, [currentQuestion]);
+  }, [currentQuestionR]);
 
   useEffect(():void => {
-    if(currentSubject === 'js' ) setCurrentData(data)
-    if(currentSubject === 'css' ) setCurrentData(dataCss)
-    if(currentSubject === 'html' ) setCurrentData(dataHtml)
-  }, [currentSubject]);
+    if(currentSubjectR === 'js' ) setCurrentData(data)
+    if(currentSubjectR === 'css' ) setCurrentData(dataCss)
+    if(currentSubjectR === 'html' ) setCurrentData(dataHtml)
+  }, [currentSubjectR]);
+  
+  // ================ //
 
-  let {variable1, variable2, variable3, variable4, question, trueAnswer} = currentData[currentQuestion]
+  let {variable1, variable2, variable3, variable4, question, trueAnswer} = currentData[currentQuestionR] || {variable1:'default', variable2:'default', variable3:'default', variable4:'default', question:'default', trueAnswer:'default'}
 
+
+  // ================ //
   const setSubject = (item: string):void =>{
-    setCurrentSubject(item)
-    setCurrentPage('test')
+    changeCurrentSubject(item)
+    changeCurrentPage('test')
     console.log(data)
   }
   const choiceAnswer = (e : React.MouseEvent<HTMLButtonElement>) =>{
     const name = (e.target as HTMLButtonElement).name
     e.preventDefault()
-    if(name === trueAnswer) setCorrectAnswer(correctAnswer + 1)
-    setCurrentQuestion(currentQuestion + 1)
+    if(name === trueAnswer) changeCorrectAnswer()
+    changeCurrentQuestion()
   }
 
   const restart = ():void => {
-    if(currentPage === 'result') setCurrentPage('test')
-    setCurrentQuestion(0)
-    setCorrectAnswer(0)
+    if(currentPageR === 'result') changeCurrentPage('test')
+    nullufyCurrentQuestion()
+    nullifyCorrectAnswer()
   }
   const goToMainPage = ():void =>{
     restart()
-    setCurrentPage('')
+    changeCurrentPage('')
   }
 
-  if(currentPage === 'test' ){  
+  // ================= //
+
+  if(currentPageR === 'test' ){  
     return (
       <div className='main-con'>
         <QuestionArea question={question}/>
@@ -73,9 +97,9 @@ const App = () => {
       </div>
     );
   }
-  if(currentPage === 'result'){
+  if(currentPageR === 'result'){
     return(
-      <Result finalResult={correctAnswer} onRetake={restart} onStartLine={goToMainPage} />
+      <Result finalResult={correctAnswerR} onRetake={restart} onStartLine={goToMainPage} />
     )
   }
   return <MainPage setSubject={setSubject}/>

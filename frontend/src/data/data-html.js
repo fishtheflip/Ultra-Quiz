@@ -14,7 +14,7 @@ const dataHtml = [
         variable1: "The World Wide Web Consortium",
         variable2: "Google",
         variable3: "Microsoft ",
-        variable4: "Mozillaкувгч ",
+        variable4: "Mozilla",
         trueAnswer: "variable1",
     },
     {   
