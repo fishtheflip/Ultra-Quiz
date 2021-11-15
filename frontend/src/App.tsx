@@ -6,18 +6,37 @@ import Result from './components/result'
 import MainPage from './components/main-page'
 import { useSelector,useDispatch } from 'react-redux';
 import {InitialStateValue} from './types/quiz-reduser-types'
-import axios from 'axios';
+import axios, {  AxiosResponse } from 'axios';
+import { useQuery } from '@apollo/client';
+import {GET_ALL_JS, GET_ALL_CSS, GET_ALL_HTML} from './query'
+
+
 
 const App = () => {
   // Set default data
   const defaultData = {variable1:'data sending...', variable2:'data sending...', variable3:'data sending...', variable4:'data sending...', question:'data sending...', trueAnswer:'default...'}
   const [currentData, setCurrentData] = useState([defaultData])
+
+  // const {dataCss} = useQuery(GET_ALL_CSS)
+  // const {dataHtml}  = useQuery(GET_ALL_HTML)
+  
   
   // Set variables from redux
   const correctAnswerR = useSelector<InitialStateValue>(state => state.correctAnswerR)
   const currentPageR = useSelector<InitialStateValue>(state => state.currentPageR)
   const currentQuestionR = useSelector<InitialStateValue, number>(state => state.currentQuestionR)
   const currentSubjectR = useSelector<InitialStateValue>(state => state.currentSubjectR)
+
+  const {data } = useQuery(GET_ALL_JS)
+  console.log('Qury',data)
+  // const dataHTML = useQuery(GET_ALL_HTML)
+  // console.log(dataHTML)
+  // const dataCSS = useQuery(GET_ALL_CSS)
+  
+  // const hz = useQuery(GET_ALL_HTML)
+  
+
+
 
   // set dispatch actions
   const dispatch = useDispatch()
@@ -56,10 +75,10 @@ const App = () => {
     if(currentSubjectR === 'css' ) getDataFromBack('css')
     if(currentSubjectR === 'html' ) getDataFromBack('html')
   }, [currentSubjectR]);
-  
+
   // ================ //
   // Destucturing variable to send it to props
-  let {variable1, variable2, variable3, variable4, question, trueAnswer} = currentData[currentQuestionR] || defaultData
+  let {variable1, variable2, variable3, variable4, question, trueAnswer} =  defaultData
 
 
   // ================ //
@@ -86,9 +105,13 @@ const App = () => {
   }
 
   const getDataFromBack = (item:string): void =>{
-    axios.get(`http://localhost:5000/${item}`).then((res:any)=>{
-      setCurrentData(res.data)
-    }).catch((err)=> console.log(err))
+    // axios.get(`http://localhost:5000/${item}`).then((res:AxiosResponse )=>{
+    //   setCurrentData(res.data)
+    // }).catch((err)=> console.log(err))
+    // if(item === 'js') setCurrentData(dataJS)
+    // if(item === 'css') setCurrentData(dataCss)
+    // if(item === 'html') setCurrentData(dataHtml)
+    
   }
 
   // ================= //
